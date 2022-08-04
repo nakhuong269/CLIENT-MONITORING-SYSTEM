@@ -4,7 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class GUIServer extends JPanel implements ActionListener{
 
@@ -25,12 +27,7 @@ public class GUIServer extends JPanel implements ActionListener{
 
     BoxLayout bl1;
 
-
-
-    int i = 0 ;
-
-    public GUIServer()
-    {
+    public GUIServer() throws UnknownHostException {
         super(new BorderLayout());
 
 
@@ -60,7 +57,7 @@ public class GUIServer extends JPanel implements ActionListener{
         add(pn1, BorderLayout.PAGE_START);
     }
 
-    public void createAndShowGUI() {
+    public void createAndShowGUI() throws UnknownHostException {
         JFrame.setDefaultLookAndFeelDecorated(true);
 
         JFrame frame = new JFrame("Server");
@@ -82,22 +79,35 @@ public class GUIServer extends JPanel implements ActionListener{
         if(str.equals("btnStart"))
         {
             if(btnSaveModeServer == false) {
-                server.startServer();
+                try {
+                    server.startServer();
 
-                lb_server_ip.setText("IP : " + server.getIP());
-                lb_server_port.setText("Port : " + server.getPort());
+                    lb_server_ip.setText("IP : " + server.getIP());
+                    lb_server_port.setText("Port : " + server.getPort());
 
-                btnSaveModeServer = true;
-                btnStart.setText("Close");
+                    btnSaveModeServer = true;
+                    btnStart.setText("Close");
+
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this,"Failed start server");
+                }
             }
             else {
-                server.CloseSocket();
+                int choose = JOptionPane.showConfirmDialog(this, "Do you want to disconnect?", "Close Server", JOptionPane.YES_NO_OPTION);
+                if (choose == JOptionPane.YES_OPTION) {
+                    try {
+                        server.CloseSocket();
 
-                lb_server_ip.setText("IP : ");
-                lb_server_port.setText("Port : ");
+                        lb_server_ip.setText("IP : ");
+                        lb_server_port.setText("Port : ");
 
-                btnStart.setText("Start");
-                btnSaveModeServer = false;
+                        btnStart.setText("Start");
+                        btnSaveModeServer = false;
+
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(this, "Failed");
+                    }
+                }
             }
         }
     }

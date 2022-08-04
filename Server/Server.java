@@ -12,35 +12,17 @@ public class Server{
     private int Port;
     ServerSocket serverSocket;
 
-    public Server() {
-        try
-        {
+    public Server() throws UnknownHostException {
             IP = InetAddress.getLocalHost().getHostAddress();
             Port = 6000;
-        } catch (UnknownHostException e) {
-            throw new RuntimeException(e);
-        }
     }
 
-    public void startServer()
-    {
-        try  {
-            serverSocket = new ServerSocket(Port);
-
-            System.out.println("Server is listening on port " + Port);
-
-        } catch (IOException ex) {
-            System.out.println("Server exception: " + ex.getMessage());
-            ex.printStackTrace();
-        }
+    public void startServer() throws IOException {
+        serverSocket = new ServerSocket(Port);
     }
 
-    public void CloseSocket() {
-        try {
-            serverSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void CloseSocket() throws IOException {
+        serverSocket.close();
     }
 
     public String getIP()
