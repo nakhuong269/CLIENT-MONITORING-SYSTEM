@@ -1,6 +1,10 @@
 package Server;
 
+import Client.Client;
+
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,21 +13,17 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class GUIServer extends JPanel implements ActionListener{
-
-    Server server = new Server();
-    JPanel pn1, pn2, pn3, pn4;
-
-
+    JPanel pn1, pn2, pn3, pn4, pn_list_client, pn_action_client, pn_search_client;
     boolean btnSaveModeServer  = false;
 
-    JLabel lb_server_ip;
-    JLabel lb_server_port;
-    JLabel lb2;
-    JLabel lb3;
+    JTextField tf_search_client;
+
+    JList list_client, list_search_client;
+    JLabel lb_server_ip, lb_server_port;
 
     CardLayout clMain;
 
-    JButton btnStart;
+    JButton btnStart, btnSearchClient;
 
     BoxLayout bl1;
 
@@ -51,10 +51,55 @@ public class GUIServer extends JPanel implements ActionListener{
         pn1.add(Box.createRigidArea(new Dimension(20, 0)));
         pn1.add(btnStart);
 
+        pn_list_client = new JPanel(new BorderLayout());
+        pn_list_client.setBorder(BorderFactory.createTitledBorder("List Client"));
+        tf_search_client = new JTextField(null,8);
+        pn2 = new JPanel();
+        pn2.setLayout(new BoxLayout(pn2,BoxLayout.X_AXIS));
+        btnSearchClient = new JButton("Search");
+        btnSearchClient.addActionListener(this);
+        btnSearchClient.setActionCommand("btnSearch");
+        pn2.add(tf_search_client);
+        pn2.add(Box.createRigidArea(new Dimension(7, 2)));
+        pn2.add(btnSearchClient);
+
+        DefaultListModel model_list_client = new DefaultListModel();
+        list_client = new JList();
+        list_client.setModel(model_list_client);
+
+        DefaultListModel model_search_client = new DefaultListModel();
+        list_search_client = new JList();
+        list_search_client.setVisibleRowCount(3);
+        list_search_client.setModel(model_search_client);
+
+        pn_search_client = new JPanel();
+        pn_search_client.setLayout(new BoxLayout(pn_search_client,BoxLayout.Y_AXIS));
+        pn_search_client.add(pn2);
+        pn_search_client.add(Box.createRigidArea(new Dimension(0, 6)));
+        pn_search_client.add(new JScrollPane(list_search_client));
+        pn_search_client.setBorder(BorderFactory.createTitledBorder("Search Client"));
+
+
+        pn_list_client.add(pn_search_client,BorderLayout.PAGE_END);
+        pn_list_client.add(new JScrollPane(list_client),BorderLayout.CENTER);
+
+        pn_action_client = new JPanel();
+        pn_action_client.setBorder(BorderFactory.createTitledBorder("Action of clients"));
 
 
 
         add(pn1, BorderLayout.PAGE_START);
+        add(pn_list_client, BorderLayout.EAST);
+        add(pn_action_client,BorderLayout.CENTER);
+    }
+
+    public void updateList_Client()
+    {
+        DefaultListModel model1 = (DefaultListModel) list_client.getModel();
+        for(int i = 0 ; i< Main.getServer().getListClient().size();i++)
+        {
+            model1.addElement(Main.getServer().getListClient().get(i).getSocket().getInetAddress().getHostAddress());
+        }
     }
 
     public void createAndShowGUI() throws UnknownHostException {
@@ -63,11 +108,11 @@ public class GUIServer extends JPanel implements ActionListener{
         JFrame frame = new JFrame("Server");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JComponent newContentPane = new GUIServer();
+        JComponent newContentPane = GUIServer.this;
         newContentPane.setOpaque(true);
         frame.setContentPane(newContentPane);
 
-        frame.setMinimumSize(new Dimension(500,400));
+        frame.setMinimumSize(new Dimension(700,400));
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
@@ -80,10 +125,10 @@ public class GUIServer extends JPanel implements ActionListener{
         {
             if(btnSaveModeServer == false) {
                 try {
-                    server.startServer();
+                    Main.getServer().startServer();
 
-                    lb_server_ip.setText("IP : " + server.getIP());
-                    lb_server_port.setText("Port : " + server.getPort());
+                    lb_server_ip.setText("IP : " + Main.getServer().getIP());
+                    lb_server_port.setText("Port : " + Main.getServer().getPort());
 
                     btnSaveModeServer = true;
                     btnStart.setText("Close");
@@ -96,7 +141,7 @@ public class GUIServer extends JPanel implements ActionListener{
                 int choose = JOptionPane.showConfirmDialog(this, "Do you want to disconnect?", "Close Server", JOptionPane.YES_NO_OPTION);
                 if (choose == JOptionPane.YES_OPTION) {
                     try {
-                        server.CloseSocket();
+                        Main.getServer().CloseServer();
 
                         lb_server_ip.setText("IP : ");
                         lb_server_port.setText("Port : ");
@@ -108,6 +153,18 @@ public class GUIServer extends JPanel implements ActionListener{
                         JOptionPane.showMessageDialog(this, "Failed");
                     }
                 }
+            }
+        }
+        else if(str.equals("btnSearch"))
+        {
+            DefaultListModel model_search_client = (DefaultListModel) list_search_client.getModel();
+            model_search_client.clear();
+            if(Main.getServer().findClient(tf_search_client.getText())!=null) {
+
+                model_search_client.addElement(Main.getServer().findClient(tf_search_client.getText()).getSocket().getInetAddress().getHostAddress());
+            }
+            else {
+                model_search_client.clear();
             }
         }
     }

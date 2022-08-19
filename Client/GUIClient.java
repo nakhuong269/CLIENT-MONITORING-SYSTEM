@@ -18,7 +18,7 @@ public class GUIClient extends JPanel implements ActionListener {
     JPanel pn1, pn2, pn3, pn4;
     boolean btnSaveModeClient  = false;
     JLabel lb_client_ip, lb_client_port;
-    JFormattedTextField ftf_client_ip, ftf_client_port;
+    JTextField tf_client_ip, tf_client_port;
 
     JButton btnConnect;
 
@@ -35,24 +35,20 @@ public class GUIClient extends JPanel implements ActionListener {
         lb_client_port = new JLabel();
         lb_client_port.setForeground(Color.RED);
 
-        try {
-            ftf_client_ip = new JFormattedTextField(new MaskFormatter("***.***.***.***"));
-            ftf_client_ip.setFont(new Font("Arial", Font.BOLD, 12));
-            ftf_client_ip.setPreferredSize(new Dimension(100, 25));
-            ftf_client_port = new JFormattedTextField();
-            ftf_client_port.setFont(new Font("Arial", Font.BOLD, 12));
-            ftf_client_port.setPreferredSize(new Dimension(100, 25));
-        } catch (ParseException e) {
-            JOptionPane.showMessageDialog(this, "Please input valid IP");
-        }
+        tf_client_ip = new JTextField(null, 10);
+        tf_client_ip.setFont(new Font("Arial", Font.BOLD, 12));
+        tf_client_ip.setPreferredSize(new Dimension(100, 25));
+        tf_client_port = new JTextField();
+        tf_client_port.setFont(new Font("Arial", Font.BOLD, 12));
+        tf_client_port.setPreferredSize(new Dimension(100, 25));
 
         pn1.add(lb_client_ip);
         pn1.add(Box.createRigidArea(new Dimension(10,0)));
-        pn1.add(ftf_client_ip);
+        pn1.add(tf_client_ip);
         pn1.add(Box.createRigidArea(new Dimension(10,0)));
         pn1.add(lb_client_port);
         pn1.add(Box.createRigidArea(new Dimension(10,0)));
-        pn1.add(ftf_client_port);
+        pn1.add(tf_client_port);
 
         lb_client_ip.setText("IP : ");
         lb_client_port.setText("Port : ");
@@ -75,7 +71,7 @@ public class GUIClient extends JPanel implements ActionListener {
         JFrame frame = new JFrame("Client");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JComponent newContentPane = new GUIClient();
+        JComponent newContentPane = GUIClient.this;
         newContentPane.setOpaque(true);
         frame.setContentPane(newContentPane);
 
@@ -92,7 +88,7 @@ public class GUIClient extends JPanel implements ActionListener {
         {
             if(btnSaveModeClient == false) {
                 try {
-                    client.startClient(ftf_client_ip.getText(), Integer.parseInt(ftf_client_port.getText()));
+                    client.startClient(tf_client_ip.getText(), Integer.parseInt(tf_client_port.getText()));
                     btnConnect.setText("Disconnect");
                     btnSaveModeClient = true;
                 } catch (IOException ex) {

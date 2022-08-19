@@ -1,10 +1,23 @@
 package Server;
 
 import javax.swing.*;
+import java.awt.*;
 import java.net.UnknownHostException;
 
 public class Main {
     private static GUIServer guiServer;
+    private static Server server;
+
+    public static GUIServer getGuiServer() {
+        return guiServer;
+    }
+
+    public static Server getServer() {
+        return server;
+    }
+    public static void setServer(Server server) {
+        Main.server = server;
+    }
 
     static {
         try {
@@ -15,6 +28,7 @@ public class Main {
     }
 
     public static void main(String[] args) throws UnknownHostException {
-         guiServer.createAndShowGUI();
+        server = new Server();
+        guiServer.createAndShowGUI();
     }
 }
