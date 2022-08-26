@@ -8,14 +8,14 @@ import java.net.*;
 import java.util.ArrayList;
 
 
-public class Server{
+public class Server extends Thread{
 
     private String IP;
     private int Port;
     ServerSocket serverSocket;
-    private ArrayList<Client> listClient;
+    private ArrayList<ClientHandler> listClient;
 
-    public ArrayList<Client> getListClient() {
+    public ArrayList<ClientHandler> getListClient() {
         return listClient;
     }
 
@@ -37,27 +37,29 @@ public class Server{
 
     public void startServer() throws IOException {
         serverSocket = new ServerSocket(Port);
-        listClient = new ArrayList<Client>();
+        listClient = new ArrayList<ClientHandler>();
         System.out.println("Server is listening on port " + Port);
 
 
-        //Tạo thread riêng cho server
-        Thread threadServer = new Thread(() -> {
-            while (serverSocket != null && !serverSocket.isClosed()) {
-                try {
-                    Socket socket = serverSocket.accept();
+        Thread threadServer = new Thread(){
+            @Override
+            public void run() {
+                while (serverSocket != null && !serverSocket.isClosed()) {
+                    try {
+                        Socket socket = serverSocket.accept();
 
-                    System.out.println("New client connected " + socket);
+                        System.out.println("New client connected " + socket);
 
-                    //Tạo thread cho từng client
-                    ClientHandler clientHandler = new ClientHandler(socket);
-                    clientHandler.start();
+                        //Create new thread for client
+                        ClientHandler clientHandler = new ClientHandler(socket);
+                        clientHandler.start();
 
-                } catch (IOException e) {
-                    break;
+                    } catch (IOException e) {
+                        break;
+                    }
                 }
             }
-        });
+        };
         threadServer.start();
     }
 
@@ -66,16 +68,21 @@ public class Server{
     }
 
 
-    public void addNewClient(Client client)
+    public void addNewClient(ClientHandler client)
     {
         this.listClient.add(client);
-        System.out.println(this.listClient);
         Main.getGuiServer().updateList_Client();
     }
 
-    public Client findClient(String ipClient)
+    public void removeClient(ClientHandler client)
     {
-        for (Client client: this.listClient) {
+        this.listClient.remove(client);
+        Main.getGuiServer().updateList_Client();
+    }
+
+    public ClientHandler findClient(String ipClient)
+    {
+        for (ClientHandler client: this.listClient) {
             if(client.getSocket().getInetAddress().getHostAddress().equals(ipClient))
             {
                 return client;
@@ -83,5 +90,6 @@ public class Server{
         }
         return null;
     }
+
 
 }

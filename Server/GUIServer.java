@@ -82,6 +82,7 @@ public class GUIServer extends JPanel implements ActionListener{
 
         pn_list_client.add(pn_search_client,BorderLayout.PAGE_END);
         pn_list_client.add(new JScrollPane(list_client),BorderLayout.CENTER);
+        //pn_list_client.add(new JFileChooser("192.168.1.14"));
 
         pn_action_client = new JPanel();
         pn_action_client.setBorder(BorderFactory.createTitledBorder("Action of clients"));
@@ -96,6 +97,7 @@ public class GUIServer extends JPanel implements ActionListener{
     public void updateList_Client()
     {
         DefaultListModel model1 = (DefaultListModel) list_client.getModel();
+        model1.clear();
         for(int i = 0 ; i< Main.getServer().getListClient().size();i++)
         {
             model1.addElement(Main.getServer().getListClient().get(i).getSocket().getInetAddress().getHostAddress());
@@ -157,14 +159,15 @@ public class GUIServer extends JPanel implements ActionListener{
         }
         else if(str.equals("btnSearch"))
         {
-            DefaultListModel model_search_client = (DefaultListModel) list_search_client.getModel();
-            model_search_client.clear();
-            if(Main.getServer().findClient(tf_search_client.getText())!=null) {
-
-                model_search_client.addElement(Main.getServer().findClient(tf_search_client.getText()).getSocket().getInetAddress().getHostAddress());
-            }
-            else {
+            if(btnSaveModeServer == true) {
+                DefaultListModel model_search_client = (DefaultListModel) list_search_client.getModel();
                 model_search_client.clear();
+                if (Main.getServer().findClient(tf_search_client.getText()) != null) {
+
+                    model_search_client.addElement(Main.getServer().findClient(tf_search_client.getText()).getSocket().getInetAddress().getHostAddress());
+                } else {
+                    model_search_client.clear();
+                }
             }
         }
     }

@@ -2,36 +2,48 @@ package Server;
 
 import Client.Client;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 public class ClientHandler extends Thread{
+    private  Socket socket;
+    private DataOutputStream dos;
+    private DataInputStream dis;
 
-    Client client;
-    public ClientHandler(Socket s) throws IOException {
-        client = new Client();
-        client.setSocket(s);
-        client.setDos(new DataOutputStream(client.getSocket().getOutputStream()));
-        client.setDis(new DataInputStream(client.getSocket().getInputStream()));
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public ClientHandler(Socket socket) throws IOException {
+        this.socket = socket;
+        this.dos = new DataOutputStream(socket.getOutputStream());
+        this.dis = new DataInputStream(socket.getInputStream());
     }
 
     @Override
     public void run() {
         try {
             while (true) {
-                String header = client.getDis().readUTF();
-                if (header == null)
-                    throw new IOException();
+                String received = dis.readUTF();
+                System.out.println("Receive: " + received);
 
-                System.out.println("Header: " + header);
-
-                Main.getServer().addNewClient(client);
+                if (received.equals("Connect")) {
+                    Main.getServer().addNewClient(this);
+                } else if (received.equals("Close")) {
+                    Main.getServer().removeClient(this);
+                    dis.close();
+                    dos.close();
+                    socket.close();
+                    break;
+                } else if (received.equals("Log")) {
+                    String log = dis.readUTF();
+                    System.out.println(log);
+                }
             }
         }
         catch (IOException e){
-            throw new RuntimeException(e.getMessage());
+            e.printStackTrace();
         }
     }
 }
