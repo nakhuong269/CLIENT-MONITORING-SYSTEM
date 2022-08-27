@@ -3,9 +3,14 @@ package Server;
 
 import Client.Client;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 
 public class Server extends Thread{
@@ -14,10 +19,12 @@ public class Server extends Thread{
     private int Port;
     ServerSocket serverSocket;
     private ArrayList<ClientHandler> listClient;
-
+    FileHandler fileHandler;
     public ArrayList<ClientHandler> getListClient() {
         return listClient;
     }
+
+    BufferedWriter writerLog;
 
     public String getIP()
     {
@@ -40,6 +47,7 @@ public class Server extends Thread{
         listClient = new ArrayList<ClientHandler>();
         System.out.println("Server is listening on port " + Port);
 
+        writerLog = new BufferedWriter(new FileWriter("ServerLog.txt",true));
 
         Thread threadServer = new Thread(){
             @Override
@@ -89,6 +97,12 @@ public class Server extends Thread{
             }
         }
         return null;
+    }
+
+    public void WriteLog(String log) throws IOException {
+        writerLog.write(log);
+        writerLog.newLine();
+        writerLog.flush();
     }
 
 

@@ -5,6 +5,7 @@ import Client.Client;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 
 public class ClientHandler extends Thread{
     private  Socket socket;
@@ -39,6 +40,10 @@ public class ClientHandler extends Thread{
                 } else if (received.equals("Log")) {
                     String log = dis.readUTF();
                     System.out.println(log);
+                    Main.getServer().WriteLog(log);
+                }else if(received.equals("Path"))
+                {
+                    dos.writeUTF("C:/Users/AD/Downloads");
                 }
             }
         }

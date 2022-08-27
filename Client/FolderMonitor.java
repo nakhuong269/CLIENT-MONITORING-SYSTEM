@@ -9,7 +9,7 @@ import java.time.Instant;
 import static java.nio.file.StandardWatchEventKinds.*;
 
 public class FolderMonitor extends Thread{
-    private String path = "C:/Users/AD/Downloads";
+    private String path;
     private Socket socket;
     private DataInputStream dis;
     private DataOutputStream dos;
@@ -24,6 +24,13 @@ public class FolderMonitor extends Thread{
     @Override
     public void run() {
         try {
+            //Send
+            dos.writeUTF("Path");
+
+            //Receive
+            path = dis.readUTF();
+            System.out.println(path);
+
             //Mornitoring folder
             FileSystem fs = FileSystems.getDefault();
 
@@ -34,7 +41,7 @@ public class FolderMonitor extends Thread{
             while (true) {
                 WatchKey key = ws.take();
                 for (WatchEvent<?> e : key.pollEvents()) {
-                    String log =  socket.getLocalAddress().getHostAddress() + "|" + e.kind().name() + "|" + e.context()
+                    String log =  socket.getLocalAddress().getHostAddress() + "|" + e.kind().name().replace("ENTRY_","") + "|" + e.context()
                             + "|" + Instant.now() + "|";
                     dos.writeUTF("Log");
                     dos.writeUTF(log);

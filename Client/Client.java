@@ -34,10 +34,20 @@ public class Client{
 
         dos.writeUTF("Connect");
 
+        String log =  socket.getLocalAddress().getHostAddress() + "|" + "LOG-IN" + "|" + " "
+                + "|" + Instant.now() + "|";
+        dos.writeUTF("Log");
+        dos.writeUTF(log);
+
         WatchFolder();
     }
 
     public void closeSocket() throws IOException, CloneNotSupportedException {
+        String log =  socket.getLocalAddress().getHostAddress() + "|" + "LOG-OUT" + "|" + " "
+                + "|" + Instant.now() + "|";
+        dos.writeUTF("Log");
+        dos.writeUTF(log);
+
         dos.writeUTF("Close");
         dos.close();
         dis.close();
