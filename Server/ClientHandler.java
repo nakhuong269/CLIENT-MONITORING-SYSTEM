@@ -31,11 +31,13 @@ public class ClientHandler extends Thread{
 
                 if (received.equals("Connect")) {
                     Main.getServer().addNewClient(this);
+                    Main.getGuiServer().fillTable();
                 } else if (received.equals("Close")) {
                     Main.getServer().removeClient(this);
                     dis.close();
                     dos.close();
                     socket.close();
+                    Main.getGuiServer().fillTable();
                     break;
                 } else if (received.equals("Log")) {
                     String log = dis.readUTF();

@@ -5,6 +5,7 @@ import Client.Client;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,14 +19,12 @@ public class GUIServer extends JPanel implements ActionListener{
 
     JTextField tf_search_client;
 
+    String[] colHeader = {"ID","Time", "Action", "IP Client", "Explain"};
     JList list_client, list_search_client;
     JLabel lb_server_ip, lb_server_port;
 
-    CardLayout clMain;
-
+    JTable tableAction;
     JButton btnStart, btnSearchClient;
-
-    BoxLayout bl1;
 
     public GUIServer() throws UnknownHostException {
         super(new BorderLayout());
@@ -82,12 +81,15 @@ public class GUIServer extends JPanel implements ActionListener{
 
         pn_list_client.add(pn_search_client,BorderLayout.PAGE_END);
         pn_list_client.add(new JScrollPane(list_client),BorderLayout.CENTER);
-        //pn_list_client.add(new JFileChooser("192.168.1.14"));
 
         pn_action_client = new JPanel();
         pn_action_client.setBorder(BorderFactory.createTitledBorder("Action of clients"));
 
+        DefaultTableModel tableModel = new DefaultTableModel(colHeader,0);
+        tableAction = new JTable(tableModel);
+        tableAction.setDefaultEditor(Object.class,null);
 
+        pn_action_client.add(new JScrollPane(tableAction),BorderLayout.CENTER);
 
         add(pn1, BorderLayout.PAGE_START);
         add(pn_list_client, BorderLayout.EAST);
@@ -170,5 +172,15 @@ public class GUIServer extends JPanel implements ActionListener{
                 }
             }
         }
+    }
+    public void fillTable()
+    {
+        DefaultTableModel model = (DefaultTableModel) tableAction.getModel();
+        Object [] rowdata = new Object[6];
+        rowdata[0] = model.getRowCount()+1;
+        rowdata[1] = "192.168.41.2";
+        rowdata[2] = "CREATE";
+        rowdata[3] = "CLient";
+        model.addRow(rowdata);
     }
 }
