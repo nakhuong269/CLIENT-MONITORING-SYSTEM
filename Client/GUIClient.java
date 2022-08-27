@@ -22,8 +22,6 @@ public class GUIClient extends JPanel implements ActionListener {
 
     JButton btnConnect;
 
-    Client client = new Client();
-
     public GUIClient(){
         super(new BorderLayout());
 
@@ -88,7 +86,7 @@ public class GUIClient extends JPanel implements ActionListener {
         {
             if(btnSaveModeClient == false) {
                 try {
-                    client.startClient(tf_client_ip.getText(), Integer.parseInt(tf_client_port.getText()));
+                    Main.getClient().startClient(tf_client_ip.getText(), Integer.parseInt(tf_client_port.getText()));
                     btnConnect.setText("Disconnect");
                     btnSaveModeClient = true;
                 } catch (IOException ex) {
@@ -102,7 +100,7 @@ public class GUIClient extends JPanel implements ActionListener {
                 int choose = JOptionPane.showConfirmDialog(this, "Do you want to disconnect?", "Close Client", JOptionPane.YES_NO_OPTION);
                 if (choose == JOptionPane.YES_OPTION) {
                     try {
-                        client.closeSocket();
+                        Main.getClient().closeSocket();
                         btnSaveModeClient = false;
                         btnConnect.setText("Connect");
                     } catch (IOException ex) {

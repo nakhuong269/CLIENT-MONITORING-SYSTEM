@@ -45,6 +45,8 @@ public class FolderMonitor extends Thread{
                             + "|" + Instant.now() + "|";
                     dos.writeUTF("Log");
                     dos.writeUTF(log);
+
+                    Main.getClient().WriteLog(log);
                     System.out.println(log);
                 }
                 key.reset();

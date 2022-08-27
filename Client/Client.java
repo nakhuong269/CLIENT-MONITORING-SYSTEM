@@ -1,8 +1,7 @@
 package Client;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.lang.reflect.WildcardType;
 import java.net.Socket;
 import java.nio.file.*;
 import java.time.Instant;
@@ -15,6 +14,7 @@ public class Client{
     private DataInputStream dis;
     private DataOutputStream dos;
 
+    BufferedWriter writerLog;
     public Socket getSocket() {
         return socket;
     }
@@ -32,6 +32,9 @@ public class Client{
         this.dis = new DataInputStream(this.socket.getInputStream());
         this.dos = new DataOutputStream(this.socket.getOutputStream());
 
+        writerLog = new BufferedWriter(new FileWriter("ClientLog.txt",true));
+
+
         dos.writeUTF("Connect");
 
         String log =  socket.getLocalAddress().getHostAddress() + "|" + "LOG-IN" + "|" + " "
@@ -39,6 +42,11 @@ public class Client{
         dos.writeUTF("Log");
         dos.writeUTF(log);
 
+        //Write ClientLog
+        WriteLog(log);
+
+
+        //Monitoring
         WatchFolder();
     }
 
@@ -52,6 +60,9 @@ public class Client{
         dos.close();
         dis.close();
         socket.close();
+
+        //Write ClientLog
+        WriteLog(log);
     }
 
     public String toString()
@@ -64,5 +75,10 @@ public class Client{
     {
         FolderMonitor folderMonitor = new FolderMonitor(this);
         folderMonitor.start();
+    }
+    public void WriteLog(String log) throws IOException {
+        writerLog.write(log);
+        writerLog.newLine();
+        writerLog.flush();
     }
 }
