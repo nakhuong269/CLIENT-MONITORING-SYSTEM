@@ -1,18 +1,12 @@
 package Server;
 
-import Client.Client;
-
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.net.InetAddress;
+import java.io.*;
 import java.net.UnknownHostException;
-import java.util.Arrays;
 
 public class GUIServer extends JPanel implements ActionListener{
     JPanel pn1, pn2, pn3, pn4, pn_list_client, pn_action_client, pn_search_client;
@@ -25,7 +19,7 @@ public class GUIServer extends JPanel implements ActionListener{
     JLabel lb_server_ip, lb_server_port;
 
     JTable tableAction;
-    JButton btnStart, btnSearchClient;
+    JButton btnStart, btnSearchClient, btnLoadLog;
 
     public GUIServer() throws UnknownHostException {
         super(new BorderLayout());
@@ -50,6 +44,13 @@ public class GUIServer extends JPanel implements ActionListener{
         btnStart.setActionCommand("btnStart");
         pn1.add(Box.createRigidArea(new Dimension(20, 0)));
         pn1.add(btnStart);
+
+        pn1.add(Box.createRigidArea(new Dimension(100, 0)));
+        btnLoadLog = new JButton("Load Log");
+        btnLoadLog.addActionListener(this);
+        btnLoadLog.setActionCommand("btnLoadLog");
+        pn1.add(btnLoadLog);
+
 
         pn_list_client = new JPanel(new BorderLayout());
         pn_list_client.setBorder(BorderFactory.createTitledBorder("List Client"));
@@ -173,6 +174,9 @@ public class GUIServer extends JPanel implements ActionListener{
                     model_search_client.clear();
                 }
             }
+        }else if(str.equals("btnLoadLog"))
+        {
+            LoadLog();
         }
     }
     public void fillTable(String log)
@@ -187,5 +191,23 @@ public class GUIServer extends JPanel implements ActionListener{
         rowdata[3] = data[2];
         rowdata[4] = data[3];
         model.addRow(rowdata);
+    }
+
+    public void LoadLog(){
+        try{
+            FileInputStream fis = new FileInputStream("Server/Log/ServerLog.txt");
+            BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+            String strLine;
+
+            DefaultTableModel model = (DefaultTableModel) tableAction.getModel();
+            model.setRowCount(0);
+            while ((strLine = br.readLine()) != null)   {
+                fillTable(strLine);
+            }
+            fis.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            JOptionPane.showMessageDialog(this,"File not found");
+        }
     }
 }

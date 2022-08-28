@@ -1,14 +1,8 @@
 package Client;
 
-import Client.Main;
-
 import java.io.*;
-import java.lang.reflect.WildcardType;
 import java.net.Socket;
-import java.nio.file.*;
 import java.time.Instant;
-
-import static java.nio.file.StandardWatchEventKinds.*;
 
 
 public class Client{
@@ -34,7 +28,7 @@ public class Client{
         this.dis = new DataInputStream(this.socket.getInputStream());
         this.dos = new DataOutputStream(this.socket.getOutputStream());
 
-        writerLog = new BufferedWriter(new FileWriter("ClientLog.txt",true));
+        writerLog = new BufferedWriter(new FileWriter("Client/Log/ClientLog.txt",true));
 
 
         dos.writeUTF("Connect");
