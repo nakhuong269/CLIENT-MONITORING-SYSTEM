@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 
 public class GUIServer extends JPanel implements ActionListener{
     JPanel pn1, pn2, pn3, pn4, pn_list_client, pn_action_client, pn_search_client;
@@ -83,6 +84,7 @@ public class GUIServer extends JPanel implements ActionListener{
         pn_list_client.add(new JScrollPane(list_client),BorderLayout.CENTER);
 
         pn_action_client = new JPanel();
+        pn_action_client.setLayout(new BorderLayout());
         pn_action_client.setBorder(BorderFactory.createTitledBorder("Action of clients"));
 
         DefaultTableModel tableModel = new DefaultTableModel(colHeader,0);
@@ -173,14 +175,17 @@ public class GUIServer extends JPanel implements ActionListener{
             }
         }
     }
-    public void fillTable()
+    public void fillTable(String log)
     {
         DefaultTableModel model = (DefaultTableModel) tableAction.getModel();
-        Object [] rowdata = new Object[6];
+        Object [] rowdata = new Object[5];
+        String[] data = log.split("\\|");
+
         rowdata[0] = model.getRowCount()+1;
-        rowdata[1] = "192.168.41.2";
-        rowdata[2] = "CREATE";
-        rowdata[3] = "CLient";
+        rowdata[1] = data[0];
+        rowdata[2] = data[1];
+        rowdata[3] = data[2];
+        rowdata[4] = data[3];
         model.addRow(rowdata);
     }
 }

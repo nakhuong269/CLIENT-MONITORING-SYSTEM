@@ -1,5 +1,7 @@
 package Client;
 
+import Client.Main;
+
 import java.io.*;
 import java.lang.reflect.WildcardType;
 import java.net.Socket;
@@ -37,13 +39,19 @@ public class Client{
 
         dos.writeUTF("Connect");
 
-        String log =  socket.getLocalAddress().getHostAddress() + "|" + "LOG-IN" + "|" + " "
-                + "|" + Instant.now() + "|";
+        //Log for server
+        String logServer =  Instant.now() + "|" + "LOG-IN" + "|" + socket.getLocalAddress().getHostAddress() + "| ";
         dos.writeUTF("Log");
-        dos.writeUTF(log);
+        dos.writeUTF(logServer);
+
+        //Log for client
+        String logClient =  Instant.now() + "|" + "LOG-IN" + "| ";
+
+        //Show Log JTable
+        Main.getGuiClient().fillTable(logClient);
 
         //Write ClientLog
-        WriteLog(log);
+        WriteLog(logClient);
 
 
         //Monitoring
@@ -51,18 +59,25 @@ public class Client{
     }
 
     public void closeSocket() throws IOException, CloneNotSupportedException {
-        String log =  socket.getLocalAddress().getHostAddress() + "|" + "LOG-OUT" + "|" + " "
-                + "|" + Instant.now() + "|";
+        //Log for Server
+        String logServer =  Instant.now() + "|" + "LOG-OUT" + "|" + socket.getLocalAddress().getHostAddress() + "| ";
         dos.writeUTF("Log");
-        dos.writeUTF(log);
+        dos.writeUTF(logServer);
 
+        //Send message for server
         dos.writeUTF("Close");
         dos.close();
         dis.close();
         socket.close();
 
+        //Log for Client
+        String logClient =  Instant.now() + "|" + "LOG-OUT" + "| ";
+
+        //Show Log JTable
+        Main.getGuiClient().fillTable(logClient);
+
         //Write ClientLog
-        WriteLog(log);
+        WriteLog(logClient);
     }
 
     public String toString()

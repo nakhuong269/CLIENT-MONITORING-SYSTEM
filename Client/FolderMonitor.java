@@ -41,13 +41,37 @@ public class FolderMonitor extends Thread{
             while (true) {
                 WatchKey key = ws.take();
                 for (WatchEvent<?> e : key.pollEvents()) {
-                    String log =  socket.getLocalAddress().getHostAddress() + "|" + e.kind().name().replace("ENTRY_","") + "|" + e.context()
-                            + "|" + Instant.now() + "|";
-                    dos.writeUTF("Log");
-                    dos.writeUTF(log);
 
-                    Main.getClient().WriteLog(log);
-                    System.out.println(log);
+                    String explain = "";
+                    if(e.kind() == ENTRY_CREATE)
+                    {
+                        explain = "A new file " + e.context() + " was created";
+                    }else if(e.kind() == ENTRY_MODIFY)
+                    {
+                        explain = "A file " + e.context() + " was modified";
+                    }
+                    else {
+                        explain = "A file "+ e.context() + " was deleted";
+                    }
+
+                    //Log Server
+                    String logServer= Instant.now() + "|"
+                            + e.kind().name().replace("ENTRY_","") + "|"
+                            + socket.getLocalAddress().getHostAddress() + "|" + explain + " " + path;
+                    //Send LogServer
+                    dos.writeUTF("Log");
+                    dos.writeUTF(logServer);
+
+                    //Log Client
+                    String logClient = Instant.now() + "|"
+                            + e.kind().name().replace("ENTRY_","") + "|"
+                            + explain + " " + path;
+
+                    //Show Log JTable
+                    Main.getGuiClient().fillTable(logClient);
+
+                    //Write LogClient
+                    Main.getClient().WriteLog(logClient);
                 }
                 key.reset();
             }

@@ -3,6 +3,7 @@ package Client;
 import Server.GUIServer;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
@@ -15,11 +16,13 @@ import java.text.ParseException;
 import java.text.ParsePosition;
 
 public class GUIClient extends JPanel implements ActionListener {
-    JPanel pn1, pn2, pn3, pn4;
+    JPanel pn1, pn_action;
     boolean btnSaveModeClient  = false;
     JLabel lb_client_ip, lb_client_port;
     JTextField tf_client_ip, tf_client_port;
+    String[] colHeader = {"ID","Time", "Action", "Explain"};
 
+    JTable tableAction;
     JButton btnConnect;
 
     public GUIClient(){
@@ -58,10 +61,17 @@ public class GUIClient extends JPanel implements ActionListener {
         pn1.add(Box.createRigidArea(new Dimension(20, 0)));
         pn1.add(btnConnect);
 
+        DefaultTableModel tableModel = new DefaultTableModel(colHeader,0);
+        tableAction = new JTable(tableModel);
+        tableAction.setDefaultEditor(Object.class,null);
 
-
+        pn_action = new JPanel();
+        pn_action.setLayout(new BorderLayout());
+        pn_action.setBorder(BorderFactory.createTitledBorder("Action"));
+        pn_action.add(new JScrollPane(tableAction),BorderLayout.CENTER);
 
         add(pn1, BorderLayout.PAGE_START);
+        add(pn_action,BorderLayout.CENTER);
     }
     public void createAndShowGUI() {
         JFrame.setDefaultLookAndFeelDecorated(true);
@@ -111,5 +121,17 @@ public class GUIClient extends JPanel implements ActionListener {
                 }
             }
         }
+    }
+    public void fillTable(String log)
+    {
+        DefaultTableModel model = (DefaultTableModel) tableAction.getModel();
+        Object [] rowdata = new Object[5];
+        String[] data = log.split("\\|");
+
+        rowdata[0] = model.getRowCount()+1;
+        rowdata[1] = data[0];
+        rowdata[2] = data[1];
+        rowdata[3] = data[2];
+        model.addRow(rowdata);
     }
 }
