@@ -1,7 +1,6 @@
-package Server;
+package Server.src;
 
 import javax.swing.*;
-import java.awt.*;
 import java.net.UnknownHostException;
 
 public class Main {

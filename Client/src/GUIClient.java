@@ -1,6 +1,4 @@
-package Client;
-
-import Server.GUIServer;
+package Client.src;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -161,8 +159,6 @@ public class GUIClient extends JPanel implements ActionListener {
                         btnConnect.setText("Connect");
                     } catch (IOException ex) {
                         JOptionPane.showMessageDialog(this,"Failed");
-                    } catch (CloneNotSupportedException ex) {
-                        throw new RuntimeException(ex);
                     }
                 }
             }

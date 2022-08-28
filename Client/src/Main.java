@@ -1,4 +1,4 @@
-package Client;
+package Client.src;
 
 
 import java.text.ParseException;

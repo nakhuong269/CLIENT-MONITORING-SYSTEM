@@ -1,4 +1,4 @@
-package Server;
+package Server.src;
 
 
 import java.io.BufferedWriter;
@@ -6,7 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
-import java.util.logging.FileHandler;
 
 
 public class Server extends Thread{
@@ -15,7 +14,6 @@ public class Server extends Thread{
     private int Port;
     ServerSocket serverSocket;
     private ArrayList<ClientHandler> listClient;
-    FileHandler fileHandler;
     public ArrayList<ClientHandler> getListClient() {
         return listClient;
     }
@@ -43,7 +41,7 @@ public class Server extends Thread{
         listClient = new ArrayList<ClientHandler>();
         System.out.println("Server is listening on port " + Port);
 
-        writerLog = new BufferedWriter(new FileWriter("Server/Log/ServerLog.txt",true));
+        writerLog = new BufferedWriter(new FileWriter("ServerLog.txt",true));
 
         Thread threadServer = new Thread(){
             @Override

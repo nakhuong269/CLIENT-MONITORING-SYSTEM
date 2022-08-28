@@ -1,4 +1,4 @@
-package Client;
+package Client.src;
 
 import java.io.*;
 import java.net.Socket;
@@ -28,7 +28,7 @@ public class Client{
         this.dis = new DataInputStream(this.socket.getInputStream());
         this.dos = new DataOutputStream(this.socket.getOutputStream());
 
-        writerLog = new BufferedWriter(new FileWriter("Client/Log/ClientLog.txt",true));
+        writerLog = new BufferedWriter(new FileWriter("ClientLog.txt",true));
 
 
         dos.writeUTF("Connect");
@@ -52,7 +52,7 @@ public class Client{
         WatchFolder();
     }
 
-    public void closeSocket() throws IOException, CloneNotSupportedException {
+    public void closeSocket() throws IOException{
         //Log for Server
         String logServer =  Instant.now() + "|" + "LOG-OUT" + "|" + socket.getLocalAddress().getHostAddress() + "| ";
         dos.writeUTF("Log");

@@ -1,4 +1,4 @@
-package Client;
+package Client.src;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -29,6 +29,11 @@ public class FolderMonitor extends Thread{
 
             //Receive
             path = dis.readUTF();
+
+
+            Path currentRelativePath = Paths.get("");
+            path = currentRelativePath.toAbsolutePath().toString();
+
             System.out.println(path);
 
             //Mornitoring folder

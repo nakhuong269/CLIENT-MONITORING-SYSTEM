@@ -1,11 +1,7 @@
-package Server;
-
-import Client.Client;
+package Server.src;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 
 public class ClientHandler extends Thread{
     private  Socket socket;
