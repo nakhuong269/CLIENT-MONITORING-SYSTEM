@@ -69,6 +69,7 @@ public class Server extends Thread{
 
     public void CloseServer() throws IOException {
         serverSocket.close();
+        writerLog.close();
     }
 
 

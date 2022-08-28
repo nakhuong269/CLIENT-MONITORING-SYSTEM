@@ -72,6 +72,8 @@ public class Client{
 
         //Write ClientLog
         WriteLog(logClient);
+
+        writerLog.close();
     }
 
     public String toString()

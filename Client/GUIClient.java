@@ -3,7 +3,11 @@ package Client;
 import Server.GUIServer;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import javax.swing.text.MaskFormatter;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
@@ -16,10 +20,10 @@ import java.text.ParseException;
 import java.text.ParsePosition;
 
 public class GUIClient extends JPanel implements ActionListener {
-    JPanel pn1, pn_action;
+    JPanel pn1, pn_action, pn2;
     boolean btnSaveModeClient  = false;
     JLabel lb_client_ip, lb_client_port;
-    JTextField tf_client_ip, tf_client_port;
+    JTextField tf_client_ip, tf_client_port, tf_filter;
     String[] colHeader = {"ID","Time", "Action", "Explain"};
 
     JTable tableAction;
@@ -65,10 +69,52 @@ public class GUIClient extends JPanel implements ActionListener {
         tableAction = new JTable(tableModel);
         tableAction.setDefaultEditor(Object.class,null);
 
+        TableRowSorter<TableModel> rowSorter
+                = new TableRowSorter<>(tableAction.getModel());
+        tableAction.setRowSorter(rowSorter);
+
+        pn2 = new JPanel();
+        pn2.add(new JLabel("Search/Filter"));
+        pn2.add(Box.createRigidArea(new Dimension(20, 0)));
+        tf_filter = new JTextField();
+        tf_filter.setPreferredSize(new Dimension(300, 20));
+        pn2.add(tf_filter);
+
+        tf_filter.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                String tf_filterText = tf_filter.getText();
+
+                if (tf_filterText.trim().length() == 0) {
+                    rowSorter.setRowFilter(null);
+                } else {
+                    rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + tf_filterText));
+                }
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                String tf_filterText = tf_filter.getText();
+
+                if (tf_filterText.trim().length() == 0) {
+                    rowSorter.setRowFilter(null);
+                } else {
+                    rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + tf_filterText));
+                }
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+
+            }
+        });
+
+
         pn_action = new JPanel();
         pn_action.setLayout(new BorderLayout());
         pn_action.setBorder(BorderFactory.createTitledBorder("Action"));
         pn_action.add(new JScrollPane(tableAction),BorderLayout.CENTER);
+        pn_action.add(pn2, BorderLayout.PAGE_START);
 
         add(pn1, BorderLayout.PAGE_START);
         add(pn_action,BorderLayout.CENTER);
@@ -134,4 +180,7 @@ public class GUIClient extends JPanel implements ActionListener {
         rowdata[3] = data[2];
         model.addRow(rowdata);
     }
+
+
+
 }
